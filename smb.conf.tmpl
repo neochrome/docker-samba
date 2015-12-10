@@ -1,0 +1,23 @@
+[global]
+bind interfaces only = yes
+interfaces = lo eth0
+load printers = no
+disable spoolss = yes
+browseable = yes
+read only = no
+guest ok = yes
+guest only = yes
+create mask = 0644
+directory mask = 0755
+map to guest = bad user
+guest account = nobody
+force user = root
+force group = root
+
+{{range $}}
+[{{.share}}]
+path = {{.path}}
+	{{if .writeable }}
+writeable = yes
+	{{end}}
+{{end}}
