@@ -1,5 +1,8 @@
 # Simple Samba Shares
 
+## Requirements
+Docker Remote API v1.14 (Docker v1.2.x) or greater is required to discover mounted volumes.
+
 ## Usage
 Launch a container from the image with `/var/run/docker.sock` mounted as `/docker.sock`.
 Any additional mounts will be exposed as public writeable Samba shares, unless mounted
