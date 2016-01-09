@@ -1,13 +1,30 @@
 #!/bin/sh
-if [[ ! -e /docker.sock ]]; then
-	printf 'Cannot find /docker.sock, is it not mapped?' 1>&2
-	exit 1
-fi
-CONTAINER_ID=$(grep -Eom 1 '[a-f0-9]{64}' /proc/self/cgroup)
+set -e
+cat > /smb.conf <<EOT
+[global]
+bind interfaces only = yes
+interfaces = lo eth0
+load printers = no
+disable spoolss = yes
+browseable = yes
+read only = no
+guest ok = yes
+guest only = yes
+create mask = 0644
+directory mask = 0755
+map to guest = bad user
+guest account = nobody
+force user = root
+force group = root
+EOT
+for p in $(lsdvol --docker-socket /docker.sock); do
+	[[ "$p" = "/docker.sock" ]] && continue
+	cat >> /smb.conf <<EOT
 
-docker inspect $CONTAINER_ID \
-	| jq '.[].Mounts|map(select(.Destination != "/docker.sock"))|map({share:.Destination|split("/")[-1],path:.Destination,writeable:.RW})' \
-	| jt --template /smb.conf.tmpl > /smb.conf
+[$(basename $p)]
+path = $p
+EOT
+done
 
 smbd \
 	--foreground \
