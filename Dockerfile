@@ -6,7 +6,7 @@ LABEL Description="Simple Samba Shares"
 RUN apk --update add \
 		curl \
 		samba \
-	&& curl -L https://github.com/neochrome/lsdvol/releases/download/v0.2.0/lsdvol -o /bin/lsdvol \
+	&& curl -L https://github.com/neochrome/lsdvol/releases/download/v0.2.1/lsdvol -o /bin/lsdvol \
 		&& chmod +x /bin/lsdvol \
 	&& apk del curl \
 	&& rm -rf /var/cache/apk/*
